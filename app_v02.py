@@ -192,7 +192,8 @@ if 'mapped_df' in st.session_state:
         cleaned_df = cleaned_df[cleaned_df['country'].isin(selected_countries)]
         cleaned_df = cleaned_df.dropna(subset=['email', 'website'])
         cleaned_df = cleaned_df.drop_duplicates(subset=['email'])
-        cleaned_df['company name'] = cleaned_df['company name'].str.replace(r'\s*\([^)]*\)$', '', regex=True)
+        cleaned_df['occurences'] = cleaned_df.groupby('website').cumcount() + 1
+        cleaned_df['company name'] = (cleaned_df['company name'].str.replace(r'\s*\([^)]*\)', '', regex=True).str.replace(r'\s*LLC', '', regex=True).str.replace('✓', '', regex=False).str.replace('"', '', regex=False).str.strip())
 
         if not cleaned_df.empty:
             st.session_state['cleaned_df'] = cleaned_df
